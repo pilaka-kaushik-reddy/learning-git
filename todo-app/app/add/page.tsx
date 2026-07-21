@@ -1,15 +1,24 @@
 "use client";
 import { useToast } from "@/components/utils/useToast";
-import { Box, Button, FormControl, Input, Typography } from "@mui/material";
+import { Box, Button, Input, Typography } from "@mui/material";
 import { SyntheticEvent, useState } from "react";
+import { AddTask } from "./actions/TaskActions";
+import { useRouter } from "next/navigation";
 
 export default function AddPage() {
   const [taskName, setTaskName] = useState("");
+  const router = useRouter();
   const { showToast } = useToast();
-  const handleSubmit = (e: SyntheticEvent) => {
-    e.preventDefault();
-    setTaskName("");
-    showToast("Form has been submitted", "success");
+  const handleSubmit = async (e: SyntheticEvent) => {
+    try {
+      e.preventDefault();
+      setTaskName("");
+      await AddTask({ id: ` ${Math.random() * 1000}`, name: taskName });
+      showToast("Form has been submitted", "success");
+      router.push("/");
+    } catch {
+      showToast("Failed to submit Task", "error");
+    }
   };
 
   return (
